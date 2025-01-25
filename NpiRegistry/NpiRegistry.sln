@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Llc.GoodConsulting.Interfaces.NpiRegistry", "Llc.GoodConsulting.Interfaces.NpiRegistry.csproj", "{189B5461-4A86-47D1-9B43-7BD7311ED77A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NpiRegistry", "NpiRegistry.csproj", "{B5C652A0-7C4F-437F-B3FE-9A6A875DA4DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{189B5461-4A86-47D1-9B43-7BD7311ED77A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{189B5461-4A86-47D1-9B43-7BD7311ED77A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{189B5461-4A86-47D1-9B43-7BD7311ED77A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{189B5461-4A86-47D1-9B43-7BD7311ED77A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C652A0-7C4F-437F-B3FE-9A6A875DA4DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C652A0-7C4F-437F-B3FE-9A6A875DA4DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C652A0-7C4F-437F-B3FE-9A6A875DA4DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C652A0-7C4F-437F-B3FE-9A6A875DA4DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

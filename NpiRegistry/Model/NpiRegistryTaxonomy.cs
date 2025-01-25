@@ -24,6 +24,6 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
         public string? License { get; set; }
 
         [JsonPropertyName("primary")]
-        public bool Primary { get; set; }
+        public bool? Primary { get; set; }
     }
 }

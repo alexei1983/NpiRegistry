@@ -7,9 +7,11 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
     /// </summary>
     public class NpiRegistryRecord
     {
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         [JsonPropertyName("created_epoch")]
         public long? CreatedEpoch { get; set; }
 
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         [JsonPropertyName("last_updated_epoch")]
         public long? LastUpdatedEpoch { get; set; }
 

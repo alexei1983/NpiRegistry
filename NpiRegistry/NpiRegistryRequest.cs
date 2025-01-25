@@ -1,5 +1,5 @@
-﻿using System.Net;
-using System.Text.Json;
+﻿using System.Reflection;
+using Llc.GoodConsulting.Web.EnhancedWebRequest;
 
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry
 {
@@ -8,60 +8,32 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
     /// </summary>
     public class NpiRegistryRequest
     {
-        const string ApiUrl = "https://npiregistry.cms.hhs.gov/api/";
+        const string ApiUrl = "https://npiregistry.cms.hhs.gov/api";
+        protected readonly EnhancedWebRequest request;
 
         /// <summary>
         /// 
         /// </summary>
         public NpiRegistryRequest()
         {
+            request = new EnhancedWebRequest(ApiUrl, new EnhancedWebRequestOptions()
+            {
+                UserAgent = "NpiRegistryClient",
+                UserAgentVersion = Assembly.GetExecutingAssembly().GetName()?.Version
+            });
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected virtual string? ExecuteString(Dictionary<string, string>? parameters = null)
+        protected async virtual Task<TResponse?> Execute<TResponse>(Dictionary<string, string>? parameters = null) where TResponse : class, new()
         {
-            var request = GetRequest(parameters);
-            return ReadResponseString(GetResponse(request));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected virtual TResponse? Execute<TResponse>(Dictionary<string, string>? parameters = null)
-        {
-            var jsonString = ExecuteString(parameters);
-            if (!string.IsNullOrEmpty(jsonString))
-                return JsonSerializer.Deserialize<TResponse>(jsonString);
-            return default;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        protected virtual HttpWebResponse GetResponse(HttpWebRequest request)
-        {
-            return (HttpWebResponse)request.GetResponse();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        protected virtual string? ReadResponseString(HttpWebResponse response)
-        {
-            if (response == null)
-                throw new ArgumentNullException(nameof(response), "Response cannot be null.");
-
-            using var responseStream = response.GetResponseStream() ?? throw new NullReferenceException("Error reading response stream");
-            using var reader = new StreamReader(responseStream);
-            return reader.ReadToEnd();
+            var urlParameters = GetQueryString(parameters) ?? string.Empty;
+            var entity = await request.MakeRequest<TResponse>(urlParameters, "GET");
+            if (entity == null || !entity.IsSuccess)
+                throw new Exception("NPI registry returned a non-successful response.");
+            return entity?.Entity;
         }
 
         /// <summary>
@@ -69,39 +41,17 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected virtual HttpWebRequest GetRequest(Dictionary<string, string>? parameters = null)
+        protected virtual string? GetQueryString(Dictionary<string, string>? parameters)
         {
-            parameters ??= [];
-
-            var request = (HttpWebRequest)WebRequest.Create($"{ApiUrl}{GetQueryString(parameters)}");
-            request.Method = "GET";
-
-            // enable TLS 1.2 protocol
-            request.ServicePoint.Expect100Continue = false;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            return request;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        protected virtual string? GetQueryString(Dictionary<string, string> parameters)
-        {
-            if (parameters != null && parameters.Count > 0)
+            if (parameters?.Count > 0)
             {
                 var queryString = "?";
                 foreach (var parameter in parameters)
-                {
                     queryString += $"{parameter.Key}={Uri.EscapeDataString(parameter.Value)}&";
-                }
 
                 return queryString.TrimEnd('&');
             }
-
-            return string.Empty;
+            return null;
         }
     }
 }

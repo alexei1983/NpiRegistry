@@ -13,7 +13,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// 
         /// </summary>
         [JsonPropertyName("result_count")]
-        public int ResultCount { get; set; }
+        public int? ResultCount { get; set; }
 
         /// <summary>
         /// 

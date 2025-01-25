@@ -11,7 +11,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <summary>
         /// 
         /// </summary>
-        public NpiRegistrySearchRequest()
+        public NpiRegistrySearchRequest() : base()
         {
         }
 
@@ -174,10 +174,10 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// 
         /// </summary>
         /// <returns></returns>
-        public NpiRegistryListResponse? Execute()
+        public async Task<NpiRegistryListResponse?> Execute()
         {
             SetParameter(NpiQueryParameters.Version, "2.1");
-            return base.Execute<NpiRegistryListResponse>(Parameters);
+            return await base.Execute<NpiRegistryListResponse>(Parameters);
         }
     }
 }
