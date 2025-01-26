@@ -2,17 +2,83 @@
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry
 {
     /// <summary>
-    /// Searches the National Plan &amp; Provider Enumeration System NPI Registry.
+    /// Searches the National Provider Identifier (NPI) Registry.
     /// </summary>
-    public class NpiRegistrySearchRequest : NpiRegistryRequest
+    internal class NpiRegistrySearchRequest : NpiRegistryRequest
     {
         readonly Dictionary<string, string> Parameters = [];
 
         /// <summary>
-        /// 
+        /// Creates a new instance of the <see cref="NpiRegistrySearchRequest"/> class.
         /// </summary>
         public NpiRegistrySearchRequest() : base()
         {
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="NpiRegistrySearchRequest"/> class.
+        /// </summary>
+        /// <param name="options"><see cref="NpiRegistrySearchOptions"/> instance to apply to the current request.</param>
+        public NpiRegistrySearchRequest(NpiRegistrySearchOptions options) : base()
+        {
+            SetOptions(options);
+        }
+
+        /// <summary>
+        /// Sets the search parameters specified in the <see cref="NpiRegistrySearchOptions"/> instance.
+        /// </summary>
+        /// <param name="options"><see cref="NpiRegistrySearchOptions"/> instance to apply to the current request.</param>
+        public void SetOptions(NpiRegistrySearchOptions options)
+        {
+            if (!string.IsNullOrEmpty(options.FirstName))
+            {
+                var useAlias = options.UseFirstNameAlias ?? true;
+                SetFirstName(options.FirstName, useAlias);
+            }
+
+            if (!string.IsNullOrEmpty(options.LastName))
+                SetLastName(options.LastName);
+
+            if (!string.IsNullOrEmpty(options.OrganizationName))
+                SetOrganizationName(options.OrganizationName);
+
+            if (!string.IsNullOrEmpty(options.EnumerationType))
+                SetEnumerationType(options.EnumerationType);
+
+            if (!string.IsNullOrEmpty(options.Number))
+                SetNumber(options.Number);
+
+            if (!string.IsNullOrEmpty(options.TaxonomyDescription))
+                SetTaxonomyDescription(options.TaxonomyDescription);
+
+            if (!string.IsNullOrEmpty(options.AddressPurpose))
+                SetAddressPurpose(options.AddressPurpose);
+
+            if (!string.IsNullOrEmpty(options.City))
+                SetCity(options.City);
+
+            if (!string.IsNullOrEmpty(options.State))
+                SetState(options.State);
+
+            if (!string.IsNullOrEmpty(options.PostalCode))
+                SetPostalCode(options.PostalCode);
+
+            if (!string.IsNullOrEmpty(options.CountryCode))
+                SetCountryCode(options.CountryCode);
+
+            if (options.Limit.HasValue)
+                SetLimit(options.Limit.Value);
+
+            if (options.Skip.HasValue)
+                SetSkip(options.Skip.Value);
+        }
+
+        /// <summary>
+        /// Clears search parameter queries and options.
+        /// </summary>
+        public void ClearOptions()
+        {
+            Parameters.Clear();
         }
 
         /// <summary>
@@ -24,7 +90,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         {
             SetParameter(NpiQueryParameters.FirstName, firstName);
             if (!searchAliasFirstName)
-                SetParameter(NpiQueryParameters.UseFirstNameAlias, "False");
+                SetParameter(NpiQueryParameters.UseFirstNameAlias, NpiConstants.False);
         }
 
         /// <summary>
@@ -64,6 +130,18 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         public void SetNumber(string number)
         {
             SetParameter(NpiQueryParameters.Number, number);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
+        public void SetNumber(int number)
+        {
+            if (number < 0)
+                throw new ArgumentException($"Invalid NPI number: {number}", nameof(number));
+
+            SetNumber(number.ToString());
         }
 
         /// <summary>
@@ -138,8 +216,8 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <param name="limit"></param>
         public void SetLimit(int limit)
         {
-            if (limit < 1 || limit > 200)
-                throw new ArgumentException("Limit must be a value from 1 to 200.", nameof(limit));
+            if (limit < NpiConstants.MinLimit || limit > NpiConstants.MaxLimit)
+                throw new ArgumentException($"Limit must be a value from {NpiConstants.MinLimit} to {NpiConstants.MaxLimit}.", nameof(limit));
 
             SetParameter(NpiQueryParameters.Limit, limit.ToString());
         }
@@ -176,7 +254,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns></returns>
         public async Task<NpiRegistryListResponse?> Execute()
         {
-            SetParameter(NpiQueryParameters.Version, "2.1");
+            SetParameter(NpiQueryParameters.Version, NpiConstants.ApiVersion21);
             return await base.Execute<NpiRegistryListResponse>(Parameters);
         }
     }

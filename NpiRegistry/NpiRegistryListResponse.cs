@@ -7,7 +7,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
     /// <summary>
     /// 
     /// </summary>
-    public class NpiRegistryListResponse
+    internal class NpiRegistryListResponse
     {
         /// <summary>
         /// 

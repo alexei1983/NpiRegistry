@@ -4,7 +4,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
     /// <summary>
     /// Type of a record in the NPI registry.
     /// </summary>
-    public static class NpiType
+    internal static class NpiType
     {
         /// <summary>
         /// Record represents an individual.
@@ -23,7 +23,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// </summary>
         /// <param name="value">Value to check.</param>
         /// <returns>True if the value is a valid NPI type, else false.</returns>
-        public static bool IsValid(string value)
+        public static bool IsValid(string? value)
         {
             if (string.IsNullOrEmpty(value))
                 return false;

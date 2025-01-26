@@ -14,22 +14,34 @@ deprecated previous versions of the API, so that shouldn't be a problem.
 
 ## Example Usage
 
-To retrieve the first 50 registered healthcare providers in the state of Colorado with a last name of "Smith":
+To synchronously retrieve information for a specific NPI number, in this case the fictitious number `1234567890`:
 
 ```
-var searchReq = new NpiRegistrySearchRequest();
-searchReq.SetLastName("Smith");
-searchReq.SetState("CO");
-searchReq.SetLimit(50);
-var searchResults = await searchReq.Execute();
+var npiClient = new NpiRegistryClient();
+var searchResult = npiClient.SearchByNumber("1234567890")
 ```
 
-To retrieve information for a specific NPI number, in this case the fictitious number `1234567890`:
+To asynchronously retrieve the first 50 registered healthcare providers in the state of Colorado:
 
 ```
-var searchReq = new NpiRegistrySearchRequest();
-searchReq.SetNumber("1234567890");
-var searchResult = await searchReq.Execute();
+var npiClient = new NpiRegistryClient();
+var searchResults = await npiClient.SearchByState("CO", 50);
+```
+
+To asynchronously retrieve the second 100 (skipping the first 100) registered healthcare providers in the state of Colorado with a last name of "Smith":
+
+```
+var npiClient = new NpiRegistryClient();
+
+var npiSearchOptions = new NpiRegistrySearchOptions() 
+{
+    LastName = "Smith",
+    State = "CO",
+    Limit = 100,
+    Skip = 100
+};
+
+var searchResults = await npiClient.SearchAsync(npiSearchOptions);
 ```
 
 ## Issues

@@ -15,6 +15,34 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
         [JsonPropertyName("last_updated_epoch")]
         public long? LastUpdatedEpoch { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public DateTimeOffset? LastUpdated
+        {
+            get
+            {
+                if (LastUpdatedEpoch.HasValue && LastUpdatedEpoch.Value > 0)
+                    return DateTimeOffset.FromUnixTimeSeconds(LastUpdatedEpoch.Value);
+                return default;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public DateTimeOffset? Created
+        {
+            get
+            {
+                if (CreatedEpoch.HasValue && CreatedEpoch.Value > 0)
+                    return DateTimeOffset.FromUnixTimeSeconds(CreatedEpoch.Value);
+                return default;
+            }
+        }
+
         [JsonPropertyName("enumeration_type")]
         public string? EnumerationType { get; set; }
 
