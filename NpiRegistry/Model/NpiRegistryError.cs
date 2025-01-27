@@ -3,7 +3,7 @@
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
 {
     /// <summary>
-    /// 
+    /// Represents an error in the National Provider Identifier (NPI) registry.
     /// </summary>
     public class NpiRegistryError
     {

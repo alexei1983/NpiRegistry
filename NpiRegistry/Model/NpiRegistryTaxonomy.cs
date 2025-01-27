@@ -3,8 +3,7 @@
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
 {
     /// <summary>
-    /// 
-    /// 
+    /// Represents a taxonomy in the National Provider Identifier (NPI) registry.
     /// </summary>
     public class NpiRegistryTaxonomy
     {

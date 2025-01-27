@@ -4,7 +4,8 @@ using System.Text.Json.Serialization;
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
 {
     /// <summary>
-    /// 
+    /// Represents an external identifier for an individual or organization in the 
+    /// National Provider Identifier (NPI) registry.
     /// </summary>
     public class NpiRegistryIdentifier
     {

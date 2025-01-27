@@ -10,7 +10,7 @@ From the [CMS.gov web site](https://www.cms.gov/regulations-and-guidance/adminis
 > intelligence-free numeric identifier (10-digit number). 
 
 This package provides easy-to-use functionality that queries the NPI registry API. Version 2.1 of the API is the only supported version in this package. CMS has 
-deprecated previous versions of the API, so that shouldn't be a problem.
+deprecated previous versions of the API.
 
 ## Example Usage
 

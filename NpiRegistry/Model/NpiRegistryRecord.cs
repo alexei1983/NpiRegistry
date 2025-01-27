@@ -3,7 +3,7 @@
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
 {
     /// <summary>
-    /// 
+    /// Represents a record in the National Provider Identifier (NPI) registry.
     /// </summary>
     public class NpiRegistryRecord
     {

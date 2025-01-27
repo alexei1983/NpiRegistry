@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
 {
     /// <summary>
-    /// 
+    /// Represents an endpoint in the National Provider Identifier (NPI) registry.
     /// </summary>
     public class NpiRegistryEndpoint
     {

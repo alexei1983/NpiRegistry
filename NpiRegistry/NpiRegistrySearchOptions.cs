@@ -2,47 +2,47 @@
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry
 {
     /// <summary>
-    /// 
+    /// Options for searching the National Provider Identifier (NPI) registry.
     /// </summary>
     public class NpiRegistrySearchOptions
     {
         /// <summary>
-        /// 
+        /// First name.
         /// </summary>
         public string? FirstName { get; set; }
 
         /// <summary>
-        /// 
+        /// Whether or not to include aliases of the first name in the search.
         /// </summary>
         public bool? UseFirstNameAlias { get; set; }
 
         /// <summary>
-        /// 
+        /// Last name.
         /// </summary>
         public string? LastName { get; set; }
 
         /// <summary>
-        /// 
+        /// Taxonomy description.
         /// </summary>
         public string? TaxonomyDescription { get; set; }
 
         /// <summary>
-        /// 
+        /// Two-letter U.S. state.
         /// </summary>
         public string? State {  get; set; }
 
         /// <summary>
-        /// 
+        /// City name.
         /// </summary>
         public string? City { get; set; }
 
         /// <summary>
-        /// 
+        /// Organization name.
         /// </summary>
         public string? OrganizationName { get; set; }
 
         /// <summary>
-        /// 
+        /// NPI type.
         /// </summary>
         public string? EnumerationType
         {
@@ -60,22 +60,22 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         }
 
         /// <summary>
-        /// 
+        /// NPI number.
         /// </summary>
         public string? Number { get; set; }
 
         /// <summary>
-        /// 
+        /// Postal code.
         /// </summary>
         public string? PostalCode { get; set; }
 
         /// <summary>
-        /// 
+        /// Country code.
         /// </summary>
         public string? CountryCode { get; set; }
 
         /// <summary>
-        /// 
+        /// Address purpose.
         /// </summary>
         public string? AddressPurpose
         {
@@ -93,7 +93,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         }
 
         /// <summary>
-        /// 
+        /// Number of records to return when searching.
         /// </summary>
         public int? Limit
         {
@@ -114,7 +114,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         }
 
         /// <summary>
-        /// 
+        /// Number of records to skip when searching (i.e., the offset).
         /// </summary>
         public int? Skip
         {
