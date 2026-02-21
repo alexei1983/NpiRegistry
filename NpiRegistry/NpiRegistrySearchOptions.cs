@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry
 {
     /// <summary>
@@ -129,6 +131,72 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
                     value = 0;
                 skip = value;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        internal Dictionary<string, string> GetQueryParameters()
+        {
+            var result = new Dictionary<string, string>();
+
+            if (!string.IsNullOrEmpty(FirstName))
+            {
+                var useAlias = UseFirstNameAlias ?? true;
+                result.TryAdd(NpiQueryParameters.FirstName, FirstName);
+                if (!useAlias)
+                    result.TryAdd(NpiQueryParameters.UseFirstNameAlias, NpiConstants.False);
+            }
+
+            if (!string.IsNullOrEmpty(LastName))
+                result.TryAdd(NpiQueryParameters.LastName, LastName);
+
+            if (!string.IsNullOrEmpty(EnumerationType)) {
+                if (!NpiType.IsValid(EnumerationType))
+                    throw new Exception($"Invalid enumeration type: {enumerationType}");
+
+                result.TryAdd(NpiQueryParameters.EnumerationType, EnumerationType.ToUpper());
+            }
+
+            if (!string.IsNullOrEmpty(TaxonomyDescription))
+                result.TryAdd(NpiQueryParameters.TaxonomyDescription, TaxonomyDescription);
+
+            if (!string.IsNullOrEmpty(OrganizationName))
+                result.TryAdd(NpiQueryParameters.OrganizationName, OrganizationName);
+
+            if (!string.IsNullOrEmpty(AddressPurpose))
+            {
+                if (!NpiAddressPurpose.IsValid(AddressPurpose))
+                    throw new Exception($"Invalid address purpose: {AddressPurpose}");
+
+                result.TryAdd(NpiQueryParameters.AddressPurpose, AddressPurpose.ToUpper());
+            }
+
+            if (!string.IsNullOrEmpty(City))
+                result.TryAdd(NpiQueryParameters.City, City);
+
+            if (!string.IsNullOrEmpty(State))
+                result.TryAdd(NpiQueryParameters.State, State);
+
+            if (!string.IsNullOrEmpty(PostalCode))
+                result.TryAdd(NpiQueryParameters.PostalCode, PostalCode);
+
+            if (!string.IsNullOrEmpty(CountryCode))
+                result.TryAdd(NpiQueryParameters.CountryCode, CountryCode);
+
+            if (Skip.HasValue && Skip.Value > 0)
+                result.TryAdd(NpiQueryParameters.Skip, Skip.Value.ToString());
+
+            if (Limit.HasValue) {
+
+                if (Limit.Value < NpiConstants.MinLimit || Limit.Value > NpiConstants.MaxLimit)
+                    throw new Exception($"Limit must be a value from {NpiConstants.MinLimit} to {NpiConstants.MaxLimit}.");
+
+                result.TryAdd(NpiQueryParameters.Limit, Limit.Value.ToString());
+            }
+            return result;
         }
 
         string? addressPurpose, enumerationType;

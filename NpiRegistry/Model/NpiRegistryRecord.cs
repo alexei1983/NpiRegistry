@@ -24,7 +24,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
             get
             {
                 if (LastUpdatedEpoch.HasValue && LastUpdatedEpoch.Value > 0)
-                    return DateTimeOffset.FromUnixTimeSeconds(LastUpdatedEpoch.Value);
+                    return DateTimeOffset.FromUnixTimeMilliseconds(LastUpdatedEpoch.Value);
                 return default;
             }
         }
@@ -38,7 +38,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry.Model
             get
             {
                 if (CreatedEpoch.HasValue && CreatedEpoch.Value > 0)
-                    return DateTimeOffset.FromUnixTimeSeconds(CreatedEpoch.Value);
+                    return DateTimeOffset.FromUnixTimeMilliseconds(CreatedEpoch.Value);
                 return default;
             }
         }

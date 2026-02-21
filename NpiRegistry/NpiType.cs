@@ -16,7 +16,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// </summary>
         public const string Organization = "NPI-2";
 
-        static readonly string[] values = [Individual, Organization];
+        static readonly string[] values = new string[] { Individual, Organization };
 
         /// <summary>
         /// Determines whether or not the specified value is a valid NPI type.

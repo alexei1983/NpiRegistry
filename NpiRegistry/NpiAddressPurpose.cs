@@ -26,8 +26,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// </summary>
         public const string Secondary = "SECONDARY";
 
-
-        static readonly string[] values = [Location, Mailing, Primary, Secondary];
+        static readonly string[] values = new string[] { Location, Mailing, Primary, Secondary };
 
         /// <summary>
         /// Determines whether or not the specified value is a valid NPI address purpose.

@@ -1,5 +1,8 @@
 ﻿
 using Llc.GoodConsulting.Interfaces.NpiRegistry.Model;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text.Json;
 
 namespace Llc.GoodConsulting.Interfaces.NpiRegistry
 {
@@ -8,17 +11,19 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
     /// </summary>
     public class NpiRegistryClient
     {
-        /// <summary>
-        /// Underlying search request.
-        /// </summary>
-        readonly NpiRegistrySearchRequest searchRequest;
+        readonly HttpClient client;
+        const string ApiUrl = "https://npiregistry.cms.hhs.gov/api";
+        const string UserAgentName = "NpiRegistryClient";
 
         /// <summary>
         /// Creates a new instance of the <see cref="NpiRegistryClient"/> class.
         /// </summary>
-        public NpiRegistryClient()
+        public NpiRegistryClient(HttpClient httpClient)
         {
-            searchRequest = new NpiRegistrySearchRequest();
+            client = httpClient;
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(UserAgentName, Assembly.GetExecutingAssembly().GetName()?.Version?.ToString(3)));
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         /// <summary>
@@ -56,7 +61,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
         public List<NpiRegistryRecord> SearchByName(string lastName, string firstName, bool searchOnFirstNameAlias = true)
         {
-            return SearchByNameAsync(lastName, firstName, searchOnFirstNameAlias).Result;
+            return SearchByNameAsync(lastName, firstName, searchOnFirstNameAlias).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
         public List<NpiRegistryRecord> SearchByOrganizationName(string organizationName)
         {
-            return SearchByOrganizationNameAsync(organizationName).Result;
+            return SearchByOrganizationNameAsync(organizationName).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -124,7 +129,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
         public List<NpiRegistryRecord> SearchByNumber(string number)
         {
-            return SearchByNumberAsync(number).Result;
+            return SearchByNumberAsync(number).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -134,7 +139,7 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
         public List<NpiRegistryRecord> SearchByNumber(int number)
         {
-            return SearchByNumberAsync(number).Result;
+            return SearchByNumberAsync(number).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -173,40 +178,40 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
         public List<NpiRegistryRecord> SearchByCityState(string city, string state, int limit = 0, int skip = 0)
         {
-            return SearchByCityStateAsync(city, state, limit, skip).Result;
+            return SearchByCityStateAsync(city, state, limit, skip).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Searches the National Provider Identifier (NPI) registry by state.
+        /// Searches the National Provider Identifier (NPI) registry by postal code.
         /// </summary>
-        /// <param name="state">Two-letter U.S. state.</param>
+        /// <param name="postalCode">Postal code.</param>
         /// <param name="limit">Number of records to return when searching (1-200).</param>
         /// <param name="skip">Number of records to skip when searching.</param>
         /// <returns><see cref="Task{List{NpiRegistryRecord}}"/></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<List<NpiRegistryRecord>> SearchByStateAsync(string state, int limit = 0, int skip = 0)
+        public async Task<List<NpiRegistryRecord>> SearchByPostalCodeAsync(string postalCode, int limit = 0, int skip = 0)
         {
-            if (string.IsNullOrEmpty(state))
-                throw new ArgumentException("State is required.", nameof(state));
+            if (string.IsNullOrEmpty(postalCode))
+                throw new ArgumentException("Postal code is required.", nameof(postalCode));
 
             return await SearchAsync(new NpiRegistrySearchOptions()
             {
-                State = state,
+                PostalCode = postalCode,
                 Limit = limit > 0 ? limit : null,
                 Skip = skip > 0 ? skip : null
             });
         }
 
         /// <summary>
-        /// Searches the National Provider Identifier (NPI) registry by state.
+        /// Searches the National Provider Identifier (NPI) registry by postal code.
         /// </summary>
-        /// <param name="state">Two-letter U.S. state.</param>
+        /// <param name="postalCode">Postal code.</param>
         /// <param name="limit">Number of records to return when searching (1-200).</param>
         /// <param name="skip">Number of records to skip when searching.</param>
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
-        public List<NpiRegistryRecord> SearchByState(string state, int limit = 0, int skip = 0)
+        public List<NpiRegistryRecord> SearchByPostalCode(string postalCode, int limit = 0, int skip = 0)
         {
-            return SearchByStateAsync(state, limit, skip).Result;
+            return SearchByPostalCodeAsync(postalCode, limit, skip).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -255,13 +260,8 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="Task{List{NpiRegistryRecord}}"/></returns>
         public async Task<List<NpiRegistryRecord>> SearchAsync(NpiRegistrySearchOptions searchOptions)
         {
-            searchRequest.ClearOptions();
-
-            searchRequest.SetOptions(searchOptions);
-
-            var searchResult = await searchRequest.Execute();
-
-            return searchResult?.Results ?? [];
+            var searchResult = await Execute<NpiRegistryListResponse>(searchOptions);
+            return searchResult?.Results ?? new List<NpiRegistryRecord>();
         }
 
         /// <summary>
@@ -271,7 +271,53 @@ namespace Llc.GoodConsulting.Interfaces.NpiRegistry
         /// <returns><see cref="List{NpiRegistryRecord}"/></returns>
         public List<NpiRegistryRecord> Search(NpiRegistrySearchOptions searchOptions)
         {
-            return SearchAsync(searchOptions).Result;
+            return SearchAsync(searchOptions).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected async virtual Task<TResponse?> Execute<TResponse>(NpiRegistrySearchOptions opts = default) where TResponse : class, new()
+        {
+            var uri = string.Empty;
+            var parameters = opts.GetQueryParameters();
+            parameters.TryAdd(NpiQueryParameters.Version, NpiConstants.ApiVersion21);
+
+            if (parameters.Count > 0)
+            {
+                uri += '?';
+                foreach (var kvp in parameters)
+                    uri += $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}&";
+            }
+
+            var req = new HttpRequestMessage(HttpMethod.Get, $"{ApiUrl}{uri}");
+
+            using (var resp = await client.SendAsync(req).ConfigureAwait(false)) {
+
+                var content = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                var error = JsonSerializer.Deserialize<NpiRegistryErrorResponse>(content);
+                if (error != null && error.Errors?.Count > 0)
+                {
+                    var message = string.Empty;
+                    foreach (var err in error.Errors)
+                    {
+                        if (!string.IsNullOrEmpty(message))
+                            message += Environment.NewLine;
+                        message += $"{err.Field}: {err.Description}";
+                    }
+                    throw new Exception(message);
+                }
+
+                if (resp.IsSuccessStatusCode)
+                   return JsonSerializer.Deserialize<TResponse>(content);
+                else
+                    throw new Exception($"{(int)resp.StatusCode} - {resp.ReasonPhrase}{Environment.NewLine}{content}");
+            }
+            return default;
         }
     }
 }
